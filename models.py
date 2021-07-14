@@ -26,4 +26,4 @@ class User(db.Model):
         
     img_url = db.Column(db.Text,
         nullable=False,
-        default='https://imgur.com/a/eMSqPUs.jpg')
+        default='https://i.imgur.com/2NFyNvK.jpeg')

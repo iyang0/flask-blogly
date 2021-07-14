@@ -1,7 +1,7 @@
 """Blogly application."""
 
 from flask_debugtoolbar import DebugToolbarExtension
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from models import db, connect_db, User
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ debug = DebugToolbarExtension(app)
 
 @app.route("/")
 def root():
-    return render_template('root.html') 
+    return redirect('/users')
     
 
 @app.route("/users")
@@ -26,4 +26,16 @@ def users_view():
     users = User.query.all()
     return render_template('user_list.html',
         users=users) 
+
+
+@app.route('/new_user')
+def create_new_user():
+
+    return render_template('new_user.html')
+
+@app.route('/user_detail')
+def display_user_details():
+    user = User.query.first()
+
+    return render_template('user_detail.html', user=user)
     

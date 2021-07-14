@@ -1,0 +1,31 @@
+{% extends 'root.html' %}
+
+<!-- Body -->
+{% block content %}
+
+<div class="row">
+  <div class="col">
+    <form action="/">
+      <div class="form-group">
+        <label for="first-name">First Name</label>
+        <input
+          type="text"
+          id="first-name"
+          name="first-name"
+          class="form-control"
+        />
+        <label for="last-name">Last Name</label>
+        <input
+          type="text"
+          id="last-name"
+          name="last-name"
+          class="form-control"
+        />
+        <label for="img-url">Image URL</label>
+        <input type="text" id="img-url" name="img-url" class="form-control" />
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
