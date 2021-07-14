@@ -18,3 +18,12 @@ debug = DebugToolbarExtension(app)
 @app.route("/")
 def root():
     return render_template('root.html') 
+    
+
+@app.route("/users")
+def users_view():
+    
+    users = User.query.all()
+    return render_template('user_list.html',
+        users=users) 
+    
