@@ -68,7 +68,7 @@ def edit_existing_user(user_id):
         user.first_name = request.form['first-name']
     if(request.form['last-name'] != ''):
         user.last_name = request.form['last-name']
-    img_url = request.form['img-url'] or None
+    user.img_url = request.form['img-url'] or None
 
     db.session.add(user)
     db.session.commit()
@@ -85,3 +85,9 @@ def delete_user(user_id):
     db.session.commit()
 
     return redirect('/users')
+
+@app.route('/users/<user_id>/posts/new')
+def display_new_post_form(user_id):
+    user = User.query.get_or_404(user_id)
+
+    return render_template('new_post.html', user=user)

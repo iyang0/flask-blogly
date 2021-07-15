@@ -18,9 +18,9 @@ class BloglyAppTestCase(TestCase):
         """Stuff to do before every test."""
         User.query.delete()
         self.client = app.test_client()
-        #TODO: change data to be more apparent that they are Test users
-        zach = User(first_name="Zach", last_name="Thomas", img_url='')
-        ivan = User(first_name="Ivan", last_name="Yang", img_url='')
+        
+        zach = User(first_name="Test user", last_name="1", img_url='')
+        ivan = User(first_name="Test user", last_name="2", img_url='')
         db.session.add_all([zach, ivan])
         db.session.commit()
         self.user1 = zach
@@ -82,10 +82,4 @@ class BloglyAppTestCase(TestCase):
             html = response.get_data(as_text=True)
             
             self.assertEqual(response.status_code, 200)
-            # self.assertEqual(response.location, "http://localhost/users")
-            # self.assertEqual(User.query.
-                # filter(User.first_name=="API2").
-                # one().
-                # first_name,
-                # "API2")
             self.assertIn(f"{d['first-name']} {d['last-name']}", html)
