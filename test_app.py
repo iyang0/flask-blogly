@@ -1,6 +1,6 @@
 from unittest import TestCase
 from app import app
-from models import db, User
+from models import db, User, Post
 
 # Make Flask errors be real errors, not HTML pages with error info
 
@@ -17,14 +17,23 @@ class BloglyAppTestCase(TestCase):
     def setUp(self):
         """Stuff to do before every test."""
         User.query.delete()
+        Post.query.delete()
         self.client = app.test_client()
         
-        zach = User(first_name="Test user", last_name="1", img_url='')
-        ivan = User(first_name="Test user", last_name="2", img_url='')
-        db.session.add_all([zach, ivan])
+        test_user_1 = User(first_name="Test user", last_name="1", img_url='')
+        test_user_2 = User(first_name="Test user", last_name="2", img_url='')
+        db.session.add_all([test_user_1, test_user_2])
         db.session.commit()
-        self.user1 = zach
-        self.user2 = ivan
+        self.user1 = test_user_1
+        self.user2 = test_user_2
+
+        self.testpost1 = Post(title='Test post 1', content='Content for test post 1', user_id=self.user1.id)
+
+        self.testpost2 = Post(title='Test post 2', content='Content for test post 2', user_id=self.user1.id)
+
+        db.session.add_all([self.testpost1, self.testpost2])
+        db.session.commit()
+
         
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -69,7 +78,7 @@ class BloglyAppTestCase(TestCase):
         """Send a post request hitting the /users/<user_id>/edit form"""
         
         with self.client as client:
-            # test_user = User.query.filter(User.first_name=="Ivan").first()
+            # test_user = User.query.filter(User.first_name=="test_user_2").first()
             d= {
                 "first-name": "API2",
                 "last-name": "Test2",
@@ -83,3 +92,13 @@ class BloglyAppTestCase(TestCase):
             
             self.assertEqual(response.status_code, 200)
             self.assertIn(f"{d['first-name']} {d['last-name']}", html)
+
+
+    def test_display_edit_post_form(self):
+        with self.client as client:
+            response = client.get(f'/posts/{self.testpost1.id}')
+            html = response.get_data(as_text=True)
+
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(f'{self.testpost1.title}', html)
