@@ -5,7 +5,7 @@
 
 <div class="row">
   <div class="col">
-    <form action="/">
+    <form action="/users/{{user_id}}/edit" method="POST">
       <div class="form-group">
         <label for="first-name">First Name</label>
         <input
@@ -23,8 +23,10 @@
         />
         <label for="img-url">Image URL</label>
         <input type="text" id="img-url" name="img-url" class="form-control" />
-        
-        <button class="btn btn-light">Cancel</button>
+
+        <form action="/users/{{user_id}}">
+          <button class="btn btn-light">Cancel</button>
+        </form>
         <button class="btn btn-primary">Save</button>
       </div>
     </form>
