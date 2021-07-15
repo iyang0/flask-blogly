@@ -3,10 +3,11 @@ from app import app
 from models import db, User
 
 # Make Flask errors be real errors, not HTML pages with error info
-app.config['TESTING'] = True
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_test'
 app.config['SQLALCHEMY_ECHO'] = False
+app.config['TESTING'] = True
+
 
 db.drop_all()
 db.create_all()
@@ -16,14 +17,14 @@ class BloglyAppTestCase(TestCase):
     def setUp(self):
         """Stuff to do before every test."""
         User.query.delete()
-        
         self.client = app.test_client()
-        app.config['TESTING'] = True
-        zach = User(first_name="Zach", last_name="Thomas")
-        ivan = User(first_name="Ivan", last_name="Yang")
+        #TODO: change data to be more apparent that they are Test users
+        zach = User(first_name="Zach", last_name="Thomas", img_url='')
+        ivan = User(first_name="Ivan", last_name="Yang", img_url='')
         db.session.add_all([zach, ivan])
         db.session.commit()
-        
+        self.user1 = zach
+        self.user2 = ivan
         
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -68,19 +69,23 @@ class BloglyAppTestCase(TestCase):
         """Send a post request hitting the /users/<user_id>/edit form"""
         
         with self.client as client:
-            test_user = User.query.filter(User.first_name=="Ivan").first()
+            # test_user = User.query.filter(User.first_name=="Ivan").first()
+            d= {
+                "first-name": "API2",
+                "last-name": "Test2",
+                "img-url": "https://media.wired.com/photos/5bb532b7f8a2e62d0bd5c4e3/1:1/w_1800,h_1800,c_limit/bee-146810332.jpg"
+                }
+            response = client.post(f'/users/{self.user2.id}/edit',
+                data = d,
+                follow_redirects=True)
+                    
+            html = response.get_data(as_text=True)
             
-            response = client.post(f'/users/{test_user.id}/edit',
-                data = {
-                    "first-name": "API2",
-                    "last-name": "Test2",
-                    "img-url": "https://media.wired.com/photos/5bb532b7f8a2e62d0bd5c4e3/1:1/w_1800,h_1800,c_limit/bee-146810332.jpg"
-                })
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.location, "http://localhost/users")
-            self.assertEqual(User.query.
-                filter(User.first_name=="API2").
-                one().
-                first_name,
-                "API2")
-                
+            self.assertEqual(response.status_code, 200)
+            # self.assertEqual(response.location, "http://localhost/users")
+            # self.assertEqual(User.query.
+                # filter(User.first_name=="API2").
+                # one().
+                # first_name,
+                # "API2")
+            self.assertIn(f"{d['first-name']} {d['last-name']}", html)
