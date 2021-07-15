@@ -66,3 +66,4 @@ class BoggleAppTestCase(TestCase):
                 one().
                 first_name,
                 "API2")
+                
