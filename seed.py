@@ -12,8 +12,6 @@ nate = User(first_name="Nate", last_name="Lipp", img_url="https://rithm-students
 
 
 
-
-
 db.session.add_all([zach, ivan, nate])
 
 db.session.commit()
@@ -21,7 +19,7 @@ db.session.commit()
 # Create test posts for test users
 testpost1 = Post(title='Test post 1', content='Content for test post 1', user_id=zach.id)
 
-testpost2 = Post(title='Test post 2testpost2', content='Content for test post 2testpost2', user_id=zach.id)
+testpost2 = Post(title='Test post 2', content='Content for test post 2', user_id=zach.id)
 
 testpost3 = Post(title='Test post 3', content='Content for test post 3', user_id=zach.id)
 

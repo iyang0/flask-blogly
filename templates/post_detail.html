@@ -1,0 +1,44 @@
+{% extends 'root.html' %} {% block content %}
+<div class="row">
+  <div class="col">
+    <h1 class="display-3">{{post.content}}</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <p>{{post.content}}</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <p>Created by <i>{{post.author.first_name}} {{post.author.last_name}}</i></p>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <form>
+      <button
+          class="btn btn-primary"
+          formaction="/users/{{post.author.id}}"
+          formmethod="GET"
+        >
+          cancel
+      </button>
+      <button
+          class="btn btn-primary"
+          formaction="/posts/{{post.id}}/edit"
+          formmethod="GET"
+        >
+          edit
+      </button>
+      <button
+          class="btn btn-primary"
+          formaction="/users/{{post.id}}/delete"
+          formmethod="POST"
+        >
+          DELETE
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
