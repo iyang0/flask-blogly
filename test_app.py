@@ -1,5 +1,6 @@
 from unittest import TestCase
 from app import app
+from models import db, User
 
 # Make Flask errors be real errors, not HTML pages with error info
 app.config['TESTING'] = True
@@ -40,17 +41,18 @@ class BoggleAppTestCase(TestCase):
                 })
             self.assertEqual(response.status_code, 302)
             self.assertEqual(response.location, "http://localhost/")
-            self.assertEqual(User.
-                query.
+            self.assertEqual(User.query.
                 filter(User.first_name=="API").
                 one().
-                first_name, "API")
+                first_name,
+                "API")
             
     def test_creating_edit_user_from_form(self):
         """Send a post request hitting the /users/<user_id>/edit form"""
         
         with self.client as client:
             test_user = User.query.filter(User.first_name=="API").one()
+            
             response = client.post(f'/users/{test_user.id}/edit',
                 data = {
                     "first-name": "API2",
@@ -59,7 +61,8 @@ class BoggleAppTestCase(TestCase):
                 })
             self.assertEqual(response.status_code, 302)
             self.assertEqual(response.location, "http://localhost/users")
-            self.assertEqual(User.
-                query.
+            self.assertEqual(User.query.
                 filter(User.first_name=="API2").
-                one().first_name, "API2")
+                one().
+                first_name,
+                "API2")
