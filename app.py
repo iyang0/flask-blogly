@@ -14,6 +14,7 @@ db.create_all()
 
 app.config['SECRET_KEY'] = "gfudhiaskhjl543278489grhuiger8934"
 debug = DebugToolbarExtension(app)
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 @app.route("/")
 def root():
@@ -39,33 +40,35 @@ def create_new_user():
     """render form to create a new user"""
     first_name = request.form['first-name']
     last_name = request.form['last-name']
-    img_url = request.form.get('img-url')
+    img_url = request.form['img-url'] or None
 
     new_user = User(first_name=first_name, last_name=last_name, img_url=img_url)
     db.session.add(new_user)
     db.session.commit()
 
-
+    # todo: redirect to /users
     return redirect('/')
 
 @app.route('/users/<user_id>')
 def display_user_details(user_id):
-    user = User.query.get(user_id)
+    user = User.query.get_or_404(user_id)
 
     return render_template('user_detail.html', user=user)
     
 
 @app.route('/users/<user_id>/edit')
 def display_edit_user_form(user_id):
-
-    return render_template('edit_user.html', user_id=user_id)
+    user = User.query.get_or_404(user_id)
+    return render_template('edit_user.html', user=user)
 
 @app.route('/users/<user_id>/edit', methods=['POST'])
 def edit_existing_user(user_id):
-    user = User.query.get(user_id)
-    user.first_name = request.form.get('first-name')
-    user.last_name = request.form.get('last-name')
-    user.img_url = request.form.get('img-url')
+    user = User.query.get_or_404(user_id)
+    if(request.form['first-name'] != ''):
+        user.first_name = request.form['first-name']
+    if(request.form['last-name'] != ''):
+        user.last_name = request.form['last-name']
+    img_url = request.form['img-url'] or None
 
     db.session.add(user)
     db.session.commit()
@@ -76,10 +79,9 @@ def edit_existing_user(user_id):
 
 @app.route('/users/<user_id>/delete', methods=['POST'])
 def delete_user(user_id):
-    user_id = int(user_id)
-    print('THE USER ID IS', user_id)
-    User.query.filter(User.id==user_id).delete()
-
+    user = User.query.get_or_404(user_id)
+    # User.query.filter(User.id==user_id).delete()
+    db.session.delete(user)
     db.session.commit()
 
     return redirect('/users')
