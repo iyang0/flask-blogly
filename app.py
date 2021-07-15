@@ -50,7 +50,7 @@ def create_new_user():
 
 @app.route('/users/<user_id>')
 def display_user_details(user_id):
-    user = User.query.first()
+    user = User.query.get(user_id)
 
     return render_template('user_detail.html', user=user)
     
@@ -76,6 +76,10 @@ def edit_existing_user(user_id):
 
 @app.route('/users/<user_id>/delete', methods=['POST'])
 def delete_user(user_id):
-    User.query.filter_by(id=user_id).delete()
+    user_id = int(user_id)
+    print('THE USER ID IS', user_id)
+    User.query.filter(User.id==user_id).delete()
+
+    db.session.commit()
 
     return redirect('/users')
