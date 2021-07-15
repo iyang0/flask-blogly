@@ -17,20 +17,21 @@ debug = DebugToolbarExtension(app)
 
 @app.route("/")
 def root():
+    """redirects to the list of users"""
     return redirect('/users')
     
 
 @app.route("/users")
 def users_view():
-    
+    """gets and displays the users from database"""
     users = User.query.all()
     return render_template('user_list.html',
         users=users) 
 
 
-@app.route('/new_user')
+@app.route('/users/new')
 def create_new_user():
-
+    """render form to create a new user"""
     return render_template('new_user.html')
 
 @app.route('/user_detail')
@@ -38,4 +39,10 @@ def display_user_details():
     user = User.query.first()
 
     return render_template('user_detail.html', user=user)
+    
+
+@app.route('/edit_user')
+def edit_existing_user():
+
+    return render_template('edit_user.html')
     
