@@ -16,23 +16,27 @@ class BloglyAppTestCase(TestCase):
     
     def setUp(self):
         """Stuff to do before every test."""
-        User.query.delete()
         Post.query.delete()
+        User.query.delete()
         self.client = app.test_client()
         
         test_user_1 = User(first_name="Test user", last_name="1", img_url='')
         test_user_2 = User(first_name="Test user", last_name="2", img_url='')
+        
         db.session.add_all([test_user_1, test_user_2])
         db.session.commit()
+        
         self.user1 = test_user_1
         self.user2 = test_user_2
 
-        self.testpost1 = Post(title='Test post 1', content='Content for test post 1', user_id=self.user1.id)
+        testpost1 = Post(title='Test post 1', content='Content for test post 1', user_id=test_user_1.id)
 
-        self.testpost2 = Post(title='Test post 2', content='Content for test post 2', user_id=self.user1.id)
+        testpost2 = Post(title='Test post 2', content='Content for test post 2', user_id=test_user_1.id)
 
-        db.session.add_all([self.testpost1, self.testpost2])
+        db.session.add_all([testpost1, testpost2])
         db.session.commit()
+        self.post1 = testpost1
+        self.post2 = testpost2
 
         
     def tearDown(self):
@@ -96,9 +100,9 @@ class BloglyAppTestCase(TestCase):
 
     def test_display_edit_post_form(self):
         with self.client as client:
-            response = client.get(f'/posts/{self.testpost1.id}')
+            response = client.get(f'/posts/{self.post1.id}')
             html = response.get_data(as_text=True)
 
 
             self.assertEqual(response.status_code, 200)
-            self.assertIn(f'{self.testpost1.title}', html)
+            self.assertIn(f'{self.post1.title}', html)

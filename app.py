@@ -84,7 +84,13 @@ def edit_existing_user(user_id):
 def delete_user(user_id):
     """Deletes the user from the database"""
     user = User.query.get_or_404(user_id)
-    # User.query.filter(User.id==user_id).delete()
+    posts = user.posts
+    
+    for post in posts:
+        db.session.delete(post)
+        
+    db.session.commit()
+    
     db.session.delete(user)
     db.session.commit()
 
